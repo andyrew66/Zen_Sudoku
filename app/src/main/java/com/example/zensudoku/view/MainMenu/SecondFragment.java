@@ -11,8 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.zensudoku.*;
-import com.example.zensudoku.game.SudokuGame;
+import com.example.zensudoku.R;
 import com.example.zensudoku.view.SudokuActivity;
 
 public class SecondFragment extends Fragment {
@@ -44,10 +43,8 @@ public class SecondFragment extends Fragment {
         //Easy button
         bttn.setOnClickListener(v -> {
             playPop();
-            ((MainMenuActivity) getActivity()).difficulty = "Test";
-            Intent i = new Intent(getActivity(), SudokuActivity.class);
-            i.putExtra("Difficulty","Easy");
-            startActivity(i);
+            ((MainMenuActivity) getActivity()).difficulty = "Easy";
+            startLevel();
             
 
         });
@@ -56,12 +53,14 @@ public class SecondFragment extends Fragment {
         bttn1.setOnClickListener(v -> {
             playPop();
             ((MainMenuActivity) getActivity()).difficulty = "Medium";
+            startLevel();
             
 
         });
         bttn2.setOnClickListener(v -> {
             playPop();
             ((MainMenuActivity) getActivity()).difficulty = "Hard";
+            startLevel();
             
 
         });
@@ -69,6 +68,13 @@ public class SecondFragment extends Fragment {
 
         view.findViewById(R.id.button_second).setOnClickListener(view1 -> NavHostFragment.findNavController(SecondFragment.this)
                 .navigate(R.id.action_SecondFragment_to_FirstFragment));
+    }
+
+    private void startLevel(){
+
+        Intent i = new Intent(getActivity(), SudokuActivity.class);
+        i.putExtra("Difficulty",((MainMenuActivity)getActivity()).difficulty);
+        startActivity(i);
     }
 
 }

@@ -3,6 +3,7 @@
     package="com.example.zensudoku">
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity  android:name=".view.MainMenu.SplashScreen"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,10 +20,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.MainMenu.MainMenuActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".SettingsActivity"/>
-        <activity android:name=".view.SudokuActivity"/>
+        <activity android:name=".SettingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.SudokuActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
