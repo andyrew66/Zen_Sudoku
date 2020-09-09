@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_waterclour_background2"
+    tools:context=".view.SudokuActivity">
+
+
+
+    <view
+        android:id="@+id/sudokuBoardView"
+        class="com.example.zensudoku.view.custom.SudokuBoardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@id/keys"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/keys"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sudokuBoardView">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+
+            android:id="@+id/button1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/ic_key1_to_smol1"
+            android:cropToPadding="true"
+            android:defaultFocusHighlightEnabled="false"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/button4"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/button2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/button2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key2_to_smol2"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/button5"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/button1"
+            app:layout_constraintRight_toLeftOf="@id/button3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/button3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key_transp"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/button6"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/button2"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/button4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key_transp"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/button7"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/button5"
+            app:layout_constraintTop_toBottomOf="@id/button1" />
+
+        <ImageButton
+            android:id="@+id/button5"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key_transp"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/button8"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/button4"
+            app:layout_constraintRight_toLeftOf="@id/button6"
+            app:layout_constraintTop_toBottomOf="@id/button2" />
+
+        <ImageButton
+            android:id="@+id/button6"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key_transp"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/button9"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/button5"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button3" />
+
+        <ImageButton
+            android:id="@+id/button7"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key_transp"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/delete"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/button8"
+            app:layout_constraintTop_toBottomOf="@id/button4" />
+
+        <ImageButton
+            android:id="@+id/button8"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key7_to_big7"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/hint"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/button7"
+            app:layout_constraintRight_toLeftOf="@id/button9"
+            app:layout_constraintTop_toBottomOf="@id/button5" />
+
+        <ImageButton
+            android:id="@+id/button9"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_key_transp"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_key7_to_smol7"
+            app:layout_constraintBottom_toTopOf="@id/pauseButton"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/button8"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button6" />
+
+        <ImageButton
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/ic_delete"
+            android:baselineAlignBottom="false"
+            android:cropToPadding="true"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/hint"
+            app:layout_constraintTop_toBottomOf="@id/button7" />
+
+        <ImageButton
+            android:id="@+id/notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_notes_off"
+            android:cropToPadding="true"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/hint"
+            app:layout_constraintRight_toLeftOf="@id/pauseButton"
+            app:layout_constraintTop_toBottomOf="@+id/button7"
+            app:layout_constraintVertical_bias="0.53" />
+
+        <ImageButton
+            android:id="@+id/hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_hint"
+            android:cropToPadding="true"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/delete"
+            app:layout_constraintRight_toLeftOf="@id/notes"
+            app:layout_constraintTop_toBottomOf="@id/button8" />
+
+        <ImageButton
+            android:id="@+id/pauseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:cropToPadding="true"
+            android:scaleType="center"
+            android:src="@drawable/ic_pause_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintLeft_toRightOf="@id/notes"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button9"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

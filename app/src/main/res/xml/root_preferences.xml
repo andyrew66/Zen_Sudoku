@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/musictoggle">
+
+        <SwitchPreferenceCompat
+
+            app:defaultValue="true"
+            app:key="music"
+            app:summaryOff="Music disabled"
+            app:summaryOn="Music enabled"
+            app:title="@string/music" />
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="sfx"
+            app:summaryOff="Sound effects disabled"
+            app:summaryOn="Sound effects enabled"
+            app:title="@string/sfx" />
+        />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

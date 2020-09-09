@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Enable Music">
+
+
+        <SwitchPreference
+
+            android:defaultValue="true"
+            android:key="music"
+            android:summaryOff="Music disabled"
+            android:summaryOn="Music enabled"
+            android:title="@string/music" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Enable Sound Effects">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/sfx"
+            android:summaryOff="Sound effects disabled"
+            android:summaryOn="Sound effects enabled"
+            android:title="@string/sfx" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
