@@ -29,6 +29,7 @@ import com.example.zensudoku.game.PuzzleSelector;
 import com.example.zensudoku.view.custom.SudokuBoardView;
 import com.example.zensudoku.viewmodel.PlaySudokuViewModel;
 import com.google.gson.Gson;
+import com.startapp.sdk.adsbase.StartAppAd;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -137,7 +138,7 @@ public class SudokuActivity extends AppCompatActivity implements SudokuBoardView
     };
 
     {
-        hintCounter = 9999;
+        hintCounter = 3;
     }
 
     {
@@ -154,7 +155,7 @@ public class SudokuActivity extends AppCompatActivity implements SudokuBoardView
 
 
 
-        mPrefs = getPreferences(MODE_PRIVATE);
+        mPrefs = getSharedPreferences("game",MODE_PRIVATE);
 
         timer.start();
         difficulty = getIntent().getStringExtra("Difficulty");
@@ -203,7 +204,7 @@ public class SudokuActivity extends AppCompatActivity implements SudokuBoardView
         AnimatedVectorDrawable avd = (AnimatedVectorDrawable) notes.getBackground();
         avd.start();
         hint = findViewById(R.id.hint);
-        ImageButton pause = (ImageButton) findViewById(R.id.pauseButton);
+        ImageButton pause = findViewById(R.id.pauseButton);
 
         pause.setOnClickListener(v -> {
             pauseMenu();
@@ -243,6 +244,9 @@ public class SudokuActivity extends AppCompatActivity implements SudokuBoardView
             if (hintCounter > 0) {
                 view.sudokuGame.getHint();
                 hintCounter--;
+            } else {
+                StartAppAd.showAd(this);
+                hintCounter = 3;
             }
             playPop(false);
         });

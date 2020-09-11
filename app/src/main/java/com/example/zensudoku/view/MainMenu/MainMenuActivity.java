@@ -1,7 +1,6 @@
 package com.example.zensudoku.view.MainMenu;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -10,9 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
-import com.example.zensudoku.*;
+import com.example.zensudoku.MusicPlayer;
 import com.example.zensudoku.R;
-import com.example.zensudoku.view.SudokuActivity;
+import com.startapp.sdk.adsbase.AutoInterstitialPreferences;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
 
 public class MainMenuActivity extends AppCompatActivity {
 
@@ -44,7 +45,16 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //Load ads
-
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
+        StartAppSDK.init(this, "StartApp App ID", false);
+        StartAppAd.setAutoInterstitialPreferences(
+                new AutoInterstitialPreferences()
+                        .setSecondsBetweenAds(60)
+        );
+        StartAppAd.enableAutoInterstitial();
 
         popNoise = MediaPlayer.create(getApplicationContext(), R.raw.pop1);
         musicPlayer = new MusicPlayer(getApplicationContext());
@@ -67,15 +77,15 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         musicPlayer.musicChecker();
-        System.out.println("resumed");
 
     }
 
 
     @Override
     protected void onStop() {
-        super.onStop();
         musicPlayer.stop();
+        super.onStop();
+
     }
 
 

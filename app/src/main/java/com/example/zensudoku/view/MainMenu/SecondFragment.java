@@ -75,6 +75,8 @@ public class SecondFragment extends Fragment {
         Intent i = new Intent(getActivity(), SudokuActivity.class);
         i.putExtra("Difficulty",((MainMenuActivity)getActivity()).difficulty);
         startActivity(i);
+        ((MainMenuActivity) getActivity()).musicPlayer.stop();
+        getActivity().finish();
     }
 
 }

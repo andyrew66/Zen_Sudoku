@@ -8,6 +8,16 @@
     android:background="@drawable/ic_waterclour_background2"
     tools:context=".view.SudokuActivity">
 
+    <com.startapp.sdk.ads.banner.Banner
+        android:id="@+id/startAppBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintBottom_toTopOf="@id/sudokuBoardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 
     <view
@@ -20,7 +30,7 @@
         app:layout_constraintBottom_toTopOf="@id/keys"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/startAppBanner" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/keys"

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.zensudoku">
+    package="com.example.zensudoku"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove"/>
 
     <application
 
+
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_icon_square"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_icon_circle"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity  android:name=".view.MainMenu.SplashScreen"
@@ -27,6 +31,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.SudokuActivity"
             android:screenOrientation="portrait"/>
+        <meta-data android:name="com.startapp.sdk.208583533" android:value="startapp_app_id" />
     </application>
 
 </manifest>
