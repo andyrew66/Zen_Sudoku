@@ -14,6 +14,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.zensudoku.R;
 import com.example.zensudoku.view.SudokuActivity;
 
+import java.util.Objects;
+
 public class SecondFragment extends Fragment {
 
     private void playPop() {
@@ -43,7 +45,7 @@ public class SecondFragment extends Fragment {
         //Easy button
         bttn.setOnClickListener(v -> {
             playPop();
-            ((MainMenuActivity) getActivity()).difficulty = "Easy";
+            ((MainMenuActivity) requireActivity()).difficulty = "Easy";
             startLevel();
             
 
@@ -52,14 +54,14 @@ public class SecondFragment extends Fragment {
         //Medium
         bttn1.setOnClickListener(v -> {
             playPop();
-            ((MainMenuActivity) getActivity()).difficulty = "Medium";
+            ((MainMenuActivity) requireActivity()).difficulty = "Medium";
             startLevel();
             
 
         });
         bttn2.setOnClickListener(v -> {
             playPop();
-            ((MainMenuActivity) getActivity()).difficulty = "Hard";
+            ((MainMenuActivity) requireActivity()).difficulty = "Hard";
             startLevel();
             
 

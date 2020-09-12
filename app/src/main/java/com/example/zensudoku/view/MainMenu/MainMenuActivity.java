@@ -44,17 +44,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        //Load ads
-        StartAppSDK.setUserConsent (this,
-                "pas",
-                System.currentTimeMillis(),
-                false);
-        StartAppSDK.init(this, "StartApp App ID", false);
-        StartAppAd.setAutoInterstitialPreferences(
-                new AutoInterstitialPreferences()
-                        .setSecondsBetweenAds(60)
-        );
-        StartAppAd.enableAutoInterstitial();
 
         popNoise = MediaPlayer.create(getApplicationContext(), R.raw.pop1);
         musicPlayer = new MusicPlayer(getApplicationContext());

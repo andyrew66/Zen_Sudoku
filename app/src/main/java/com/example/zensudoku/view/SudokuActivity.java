@@ -288,7 +288,7 @@ public class SudokuActivity extends AppCompatActivity implements SudokuBoardView
             }
         }
     }
-
+    
     @Override
     protected void onStart() {
         Activity activity = this;

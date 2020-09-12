@@ -7,6 +7,7 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.zensudoku.*;
+import com.startapp.sdk.adsbase.StartAppSDK;
 
 
 public class SplashScreen extends AppCompatActivity {
@@ -15,6 +16,13 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
+
+        StartAppSDK.init(this, "208583533", false);
 
         new Handler().postDelayed(new Runnable() {
             @Override
