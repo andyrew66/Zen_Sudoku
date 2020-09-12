@@ -151,7 +151,7 @@ public class SudokuActivity extends AppCompatActivity implements SudokuBoardView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        StartAppAd.showAd(this);
 
 
 
@@ -301,6 +301,7 @@ public class SudokuActivity extends AppCompatActivity implements SudokuBoardView
 
 
     }
+
 
 
     @Override
