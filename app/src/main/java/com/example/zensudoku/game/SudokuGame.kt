@@ -1,121 +1,103 @@
-package com.example.zensudoku.game;
+package com.example.zensudoku.game
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Pair;
+import android.content.Context
+import android.content.SharedPreferences
+import android.util.Pair
+import androidx.lifecycle.MutableLiveData
 
-import androidx.lifecycle.MutableLiveData;
+class SudokuGame(val size: Int) {
+    var isComplete = MutableLiveData<Boolean>()
+    var cellsLiveData = MutableLiveData<Board?>()
+    var notesLiveData = MutableLiveData<Set<Int?>>()
+    var isTakingNotes: MutableLiveData<Boolean>? = MutableLiveData()
+    var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
+    var context: Context? = null
+    var board: Board? = null
+    var mPrefs: SharedPreferences? = null
+    var savedBoard: Board? = null
+    var game: Array<Array<Int?>>
+    private var selectedRow = -1
+    private var selectedCol = -1
+    private var takingNotes = false
 
-import java.util.HashSet;
-import java.util.Set;
-
-
-public class SudokuGame {
-    public MutableLiveData<Boolean> isComplete = new MutableLiveData<>();
-    public MutableLiveData<Board> cellsLiveData = new MutableLiveData<>();
-    public MutableLiveData<Set<Integer>> notesLiveData = new MutableLiveData<>();
-    public MutableLiveData<Boolean> isTakingNotes = new MutableLiveData<>();
-    public MutableLiveData<Pair<Integer, Integer>> selectedCellLiveData = new MutableLiveData<>();
-    Context context;
-    public Board board;
-    SharedPreferences mPrefs;
-    Board savedBoard;
-    Integer[][] game;
-
-
-    private int selectedRow = -1;
-    private int selectedCol = -1;
-    private boolean takingNotes = false;
-
-    {
-        isTakingNotes.setValue(false);
-        isComplete.setValue(false);
-
-        selectedCellLiveData.postValue(Pair.create(selectedRow, selectedCol));
-
+    init {
+        game = Array(size) { arrayOfNulls<Int>(size) }
+        isTakingNotes!!.value = false
+        isComplete.value = false
+        selectedCellLiveData.postValue(Pair.create(selectedRow, selectedCol))
     }
 
-    public SudokuGame() {
-
-    }
-
-    public void handleInput(int value) {
-
-        if (selectedRow == -1 || selectedCol == -1) return;
-        Set returnValues = new HashSet<>();
-        if (isTakingNotes == null) return;
-        if (!isTakingNotes.getValue()) {
-            board.setCell(selectedRow, selectedCol, value);
+    fun handleInput(value: Int) {
+        if (selectedRow == -1 || selectedCol == -1) return
+        val returnValues: MutableSet<Int?> = HashSet()
+        if (isTakingNotes == null) return
+        if (!isTakingNotes!!.value!!) {
+            board!!.setCell(selectedRow, selectedCol, value)
         } else {
-            returnValues = board.getCellNotes(selectedRow, selectedCol);
-            if (board.getCellNotes(selectedRow, selectedCol).contains(value)) {
-                board.removeNotes(selectedRow, selectedCol, value);
+            if (board!!.getCellNotes(selectedRow, selectedCol).contains(value)) {
+                board!!.removeNotes(selectedRow, selectedCol, value)
             } else {
-                board.addNotes(selectedRow, selectedCol, value);
+                board!!.addNotes(selectedRow, selectedCol, value)
             }
+            returnValues.clear()
+            returnValues.addAll(board!!.getCellNotes(selectedRow, selectedCol))
         }
-        cellsLiveData.postValue(board);
-        notesLiveData.postValue(returnValues);
-        isComplete.postValue(board.getBoardComplete());
-
-    }
-
-    public void setNotesMode() {
-
-        takingNotes = !takingNotes;
-        isTakingNotes.postValue(takingNotes);
-        if (takingNotes) notesLiveData.postValue(board.getCellNotes(selectedRow, selectedCol));
-        else notesLiveData.postValue(new HashSet<>());
-
+        cellsLiveData.postValue(board)
+        notesLiveData.postValue(returnValues)
+        isComplete.postValue(board!!.getBoardComplete())
     }
 
 
-    public void getHint() {
-        board.getHint();
-        cellsLiveData.postValue(board);
-        isComplete.postValue(board.getBoardComplete());
+    fun setNotesMode() {
+        takingNotes = !takingNotes
+        isTakingNotes!!.postValue(takingNotes)
+        if (takingNotes) notesLiveData.postValue(board!!.getCellNotes(selectedRow, selectedCol)) else notesLiveData.postValue(HashSet())
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-        context.getSharedPreferences("savedData", Context.MODE_PRIVATE);
-
-    }
-
-    public void updateSelectedCellLiveData(int row, int col) {
-        selectedRow = row;
-        selectedCol = col;
-        selectedCellLiveData.postValue(Pair.create(row, col));
-        if (board.getCell(row, col) != 0) {
-            Set<Integer> empty = new HashSet<>();
-            notesLiveData.postValue(empty);
+    val hint: Unit
+        get() {
+            board!!.hint
+            cellsLiveData.postValue(board)
+            isComplete.postValue(board!!.getBoardComplete())
         }
-        assert isTakingNotes != null;
-        if (isTakingNotes.getValue()) {
-            notesLiveData.postValue(board.getCellNotes(row, col));
+
+    fun setContext(context: Context) {
+        this.context = context
+        context.getSharedPreferences("savedData", Context.MODE_PRIVATE)
+    }
+
+    fun updateSelectedCellLiveData(row: Int, col: Int) {
+        selectedRow = row
+        selectedCol = col
+        selectedCellLiveData.postValue(Pair(row, col))
+        if (board!!.getCell(row, col) != 0) {
+            val empty: Set<Int?> = HashSet()
+            notesLiveData.postValue(empty)
         }
-        isComplete.postValue(board.getBoardComplete());
-    }
-
-    public void setGame(Integer[][] game) {
-        this.game = game;
-        board = new Board(9, game);
-        cellsLiveData.setValue(board);
-        selectedCellLiveData.postValue(Pair.create(selectedRow, selectedCol));
-    }
-
-
-    public void delete() {
-        if (selectedCol == -1 || selectedRow == -1 || isTakingNotes == null) return;
-        if (isTakingNotes.getValue()) {
-            board.removeAllNotes(selectedRow, selectedCol);
-            notesLiveData.postValue(new HashSet<>());
-
+        assert(isTakingNotes != null)
+        if (isTakingNotes!!.value!!) {
+            notesLiveData.postValue(board!!.getCellNotes(row, col))
         }
-        handleInput(0);
+        isComplete.postValue(board!!.getBoardComplete())
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    fun setGame(game: Array<Array<Int?>>) {
+        this.game = game
+        board = Board(9, game)
+        cellsLiveData.value = board
+        selectedCellLiveData.postValue(Pair.create(selectedRow, selectedCol))
+    }
+
+    fun delete() {
+        if (selectedCol == -1 || selectedRow == -1 || isTakingNotes == null) return
+        if (isTakingNotes!!.value!!) {
+            board!!.removeAllNotes(selectedRow, selectedCol)
+            notesLiveData.postValue(HashSet())
+        }
+        handleInput(0)
+    }
+
+    fun setBoard(board: Board?) {
+        this.board = board
     }
 }

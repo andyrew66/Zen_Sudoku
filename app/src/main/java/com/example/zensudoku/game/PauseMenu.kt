@@ -1,92 +1,73 @@
-package com.example.zensudoku.game;
+package com.example.zensudoku.game
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import com.example.zensudoku.R;
-import com.example.zensudoku.SettingsActivity;
-import com.example.zensudoku.view.MainMenu.MainMenuActivity;
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.fragment.app.DialogFragment
+import com.example.zensudoku.R
+import com.example.zensudoku.SettingsActivity
+import com.example.zensudoku.view.MainMenu.MainMenuActivity
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link PauseMenu#newInstance} factory method to
+ * A simple [Fragment] subclass.
+ * Use the [PauseMenu.newInstance] factory method to
  * create an instance of this fragment.
  */
-public class PauseMenu extends DialogFragment {
-
-    ImageButton resume;
-    ImageButton exitBtn;
-    ImageButton optnsBtn;
+class PauseMenu : DialogFragment() {
+    var resume: ImageButton? = null
+    var exitBtn: ImageButton? = null
+    var optnsBtn: ImageButton? = null
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public PauseMenu() {
-        // Required empty public constructor
-    }
-
-    /**
-     * @return A new instance of fragment PauseMenu.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PauseMenu newInstance() {
-        PauseMenu fragment = new PauseMenu();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+    private val mParam1: String? = null
+    private val mParam2: String? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
         }
-
-
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pause_menu, container, false);
+        return inflater.inflate(R.layout.fragment_pause_menu, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        resume = (ImageButton) view.findViewById(R.id.resumePause);
-        exitBtn = (ImageButton) view.findViewById(R.id.exit);
-        optnsBtn = (ImageButton) view.findViewById(R.id.optnsPause);
-
-        resume.setOnClickListener(v -> {
-            getDialog().dismiss();
-        });
-        exitBtn.setOnClickListener(v -> {
-            Intent i = new Intent(getActivity(), MainMenuActivity.class);
-            startActivity(i);
-            getActivity().finish();
-        });
-        optnsBtn.setOnClickListener(v -> {
-            Intent i = new Intent(getActivity(), SettingsActivity.class);
-            startActivity(i);
-        });
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        resume = view.findViewById<View>(R.id.resumePause) as ImageButton
+        exitBtn = view.findViewById<View>(R.id.exit) as ImageButton
+        optnsBtn = view.findViewById<View>(R.id.optnsPause) as ImageButton
+        resume!!.setOnClickListener { v: View? -> dialog!!.dismiss() }
+        exitBtn!!.setOnClickListener { v: View? ->
+            val i = Intent(activity, MainMenuActivity::class.java)
+            startActivity(i)
+            activity!!.finish()
+        }
+        optnsBtn!!.setOnClickListener { v: View? ->
+            val i = Intent(activity, SettingsActivity::class.java)
+            startActivity(i)
+        }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getDialog().getWindow().getAttributes().alpha = 0.9f;
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        dialog!!.window!!.attributes.alpha = 0.9f
     }
 
+    companion object {
+        /**
+         * @return A new instance of fragment PauseMenu.
+         */
+        // TODO: Rename and change types and number of parameters
+        fun newInstance(): PauseMenu {
+            val fragment = PauseMenu()
+            val args = Bundle()
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

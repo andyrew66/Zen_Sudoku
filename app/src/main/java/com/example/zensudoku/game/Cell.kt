@@ -1,62 +1,36 @@
-package com.example.zensudoku.game;
+package com.example.zensudoku.game
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable
 
-public class Cell implements Serializable {
+class Cell(var value: Int) : Serializable {
+    var notes: MutableSet<Int> = HashSet()
+    var originalValue = false
+    var isInvalidValue = false
+    var isHintvalue = false
 
-    int value;
-    Set<Integer> notes = new HashSet<>();
-    boolean originalValue = false;
-    boolean invalidValue = false;
-    boolean hintvalue = false;
-
-    public Cell(int value) {
-        this.value = value;
-        if (value != 0) originalValue = true;
+    init {
+        if (value != 0) originalValue = true
     }
 
-    public boolean isInvalidValue() {
-        return invalidValue;
+    fun getNotes(): Set<Int> {
+        val empty: Set<Int> = HashSet()
+        return if (value != 0) empty else notes
     }
 
-    public int getValue() {
-        return value;
+    fun addNotes(value: Int) {
+        if (value == 0) return
+        notes.add(value)
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    fun setHintvalue() {
+        isHintvalue = true
     }
 
-    public boolean getOriginalValue() {
-        return originalValue;
+    fun removeNotes(value: Int) {
+        notes.remove(value)
     }
 
-    public Set<Integer> getNotes() {
-        Set<Integer> empty = new HashSet<>();
-        if (getValue() != 0) return empty;
-        return notes;
-    }
-
-    public void addNotes(int value) {
-        if (value == 0) return;
-        notes.add(value);
-    }
-
-    public void setHintvalue() {
-        this.hintvalue = true;
-    }
-
-    public boolean isHintvalue() {
-        return hintvalue;
-    }
-
-    public void removeNotes(int value) {
-        notes.remove(value);
-    }
-
-    public void removeAllNotes() {
-        notes = new HashSet<>();
+    fun removeAllNotes() {
+        notes = HashSet()
     }
 }

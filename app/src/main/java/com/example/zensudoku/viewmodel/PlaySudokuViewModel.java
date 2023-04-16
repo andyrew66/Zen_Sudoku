@@ -7,10 +7,6 @@ import com.example.zensudoku.game.SudokuGame;
 
 
 public class PlaySudokuViewModel extends ViewModel {
-
-    public SudokuGame sudokuGame;
-
-    {
-        sudokuGame = new SudokuGame();
-    }
+    public SudokuGame sudokuGame = new SudokuGame();
 }
+

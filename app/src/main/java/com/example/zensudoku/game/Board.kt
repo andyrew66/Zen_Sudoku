@@ -1,139 +1,119 @@
-package com.example.zensudoku.game;
+package com.example.zensudoku.game
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.io.Serializable
+import java.util.Random
 
-public class Board implements Serializable {
-    static int size;
-    boolean boardComplete = false;
-    Cell[][] board = new Cell[size][size];
-    Integer[][] origBoard;
+class Board(val size: Int = 9) : Serializable {
+    var boardComplete = false
+    var board: Array<Array<Cell?>>
+    var origBoard: Array<Array<Int?>>
+    var cell: Cell? = null
+    var answer: Array<Array<Cell?>>
 
-    Cell cell;
-    Cell[][] answer = new Cell[size][size];
-
-    {
-        size = 9;
+    init {
+        board = Array(size) { arrayOfNulls<Cell>(size) }
+        origBoard = Array(size) { arrayOfNulls<Int>(size) }
+        answer = Array(size) { arrayOfNulls<Cell>(size) }
     }
 
-
-    public Board(int size, Integer[][] board) {
-        this.origBoard = board.clone();
-        Board.size = size;
-        this.board = setCells(board);
-
-        SudokuSolver ss = new SudokuSolver(origBoard);
-        this.answer = setCells(ss.getAnswerBoard());
+    constructor(size: Int, board: Array<Array<Int?>>) : this(size) {
+        origBoard = board.clone()
+        this.board = setCells(board)
+        val ss = SudokuSolver(origBoard)
+        answer = setCells(ss.answerBoard)
     }
 
-    public Board() {
-
-    }
-
-    private Cell[][] setCells(Integer[][] boardLayout) {
-
-
-        Cell[][] boards = new Cell[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                cell = new Cell(boardLayout[i][j]);
-                boards[i][j] = cell;
+    private fun setCells(boardLayout: Array<Array<Int?>>): Array<Array<Cell?>> {
+        val boards = Array(size) { arrayOfNulls<Cell>(size) }
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                cell = Cell(boardLayout[i][j]!!)
+                boards[i][j] = cell
             }
         }
-        return boards;
+        return boards
     }
 
-    public int getCell(int r, int c) {
-        return board[r][c].getValue();
+    fun getCell(r: Int, c: Int): Int {
+        return board[r][c]!!.value
     }
 
-    public boolean getOriginal(int r, int c) {
-
-        return board[r][c].getOriginalValue();
+    fun getOriginal(r: Int, c: Int): Boolean {
+        return board[r][c]!!.originalValue
     }
 
-    public Integer[][] getOrigBoard() {
-        return origBoard;
+    fun setCell(r: Int, c: Int, value: Int) {
+        board[r][c]!!.value = value
+        checkBoard()
     }
 
-    public void setCell(int r, int c, int value) {
-
-        board[r][c].setValue(value);
-        checkBoard();
-
-
+    fun addNotes(r: Int, c: Int, value: Int) {
+        board[r][c]!!.addNotes(value)
     }
 
-    public void addNotes(int r, int c, int value) {
-        board[r][c].addNotes(value);
+    fun getInvalidCell(r: Int, c: Int): Boolean {
+        return board[r][c]!!.isInvalidValue
     }
 
-    public boolean getInvalidCell(int r, int c) {
-        return board[r][c].isInvalidValue();
+    fun getCellNotes(row: Int, col: Int): Set<Int?> {
+        return if (row == -1 && col == -1) {
+            HashSet<Int>()
+        } else board[row][col]!!.getNotes()
     }
 
 
-    public Set getCellNotes(int row, int col) {
-        if (row == -1 && col == -1) {
-            return new HashSet<Integer>();
-        }
-        return board[row][col].getNotes();
-
+    fun removeNotes(row: Int, col: Int, value: Int) {
+        board[row][col]!!.removeNotes(value)
     }
 
-    public void removeNotes(int row, int col, int value) {
-        board[row][col].removeNotes(value);
+    fun removeAllNotes(row: Int, col: Int) {
+        board[row][col]!!.removeAllNotes()
     }
 
-    public void removeAllNotes(int row, int col) {
-        board[row][col].removeAllNotes();
-    }
-
-    private boolean checkBoard() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j].getValue() != answer[i][j].getValue()) return false;
+    private fun checkBoard(): Boolean {
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                if (board[i][j]!!.value != answer[i][j]!!.value) return false
             }
         }
-        return true;
+        return true
     }
 
-    public Boolean getBoardComplete() {
-        boardComplete = checkBoard();
-        return boardComplete;
+    fun getBoardComplete(): Boolean {
+        boardComplete = checkBoard()
+        return boardComplete
     }
 
-    public Boolean getHint(int row, int col) {
-        return board[row][col].isHintvalue();
+    fun getHint(row: Int, col: Int): Boolean {
+        return board[row][col]!!.isHintvalue
     }
 
-    public void getHint() {
-
-        if (getBoardComplete()) {
-            return;
-        }
-        int max = 9;
-        int min = 0;
-        Boolean origCell = true;
-        Boolean hintCell = false;
-        Random r = new Random();
-        r.nextInt(max - min);
-        int rowPos = 1;
-        int colPos = 1;
-        while (origCell && !hintCell) {
-            rowPos = r.nextInt((max - min) - min);
-            colPos = r.nextInt((max - min) - min);
-            origCell = board[rowPos][colPos].originalValue;
-            if (origCell) {
-                hintCell = board[rowPos][colPos].hintvalue;
+    val hint: Unit
+        get() {
+            if (getBoardComplete()) {
+                return
             }
+            val max = 9
+            val min = 0
+            var origCell = true
+            var hintCell = false
+            val r = Random()
+            r.nextInt(max - min)
+            var rowPos = 1
+            var colPos = 1
+            while (origCell && !hintCell) {
+                rowPos = r.nextInt(max - min - min)
+                colPos = r.nextInt(max - min - min)
+                origCell = board[rowPos][colPos]!!.originalValue
+                if (origCell) {
+                    hintCell = board[rowPos][colPos]!!.isHintvalue
+                }
+            }
+            setCell(rowPos, colPos, answer[rowPos][colPos]!!.value)
+            board[rowPos][colPos]!!.setHintvalue()
         }
-        setCell(rowPos, colPos, answer[rowPos][colPos].getValue());
-        board[rowPos][colPos].setHintvalue();
+
+    companion object {
+        var size = 0
     }
-
-
 }
-

@@ -1,38 +1,25 @@
-package com.example.zensudoku;
+package com.example.zensudoku
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.media.MediaPlayer;
-import android.preference.PreferenceManager;
+import android.content.Context
+import android.media.MediaPlayer
+import androidx.preference.PreferenceManager
 
-public class MusicPlayer {
+class MusicPlayer(var context: Context) {
+    var mediaPlayer: MediaPlayer? = null
 
-
-    MediaPlayer mediaPlayer;
-
-    Context context;
-
-
-    public MusicPlayer(Context context) {
-        this.context = context;
-    }
-
-
-    public void musicChecker() {
-
-        SharedPreferences sb = PreferenceManager.getDefaultSharedPreferences(context);
+    fun musicChecker() {
+        val sb = PreferenceManager.getDefaultSharedPreferences(context)
         if (sb.getBoolean("music", true)) {
-            mediaPlayer = MediaPlayer.create(context, R.raw.ambient);
-            mediaPlayer.start();
+            mediaPlayer = MediaPlayer.create(context, R.raw.ambient)
+            mediaPlayer?.start() // Add null check here
         } else {
-            stop();
+            stop()
         }
     }
 
-    public void stop() {
+    fun stop() {
         if (mediaPlayer != null) {
-            mediaPlayer.release();
+            mediaPlayer!!.release()
         }
     }
 }
-

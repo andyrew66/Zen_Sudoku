@@ -1,379 +1,326 @@
-package com.example.zensudoku.view;
+package com.example.zensudoku.view
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.AnimatedVectorDrawable;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.util.Pair;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageButton;
+import android.app.Activity
+import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.media.MediaPlayer
+import android.os.Bundle
+import android.util.Pair
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
+import com.example.zensudoku.MusicPlayer
+import com.example.zensudoku.R
+import com.example.zensudoku.SettingsActivity
+import com.example.zensudoku.Timer
+import com.example.zensudoku.game.Board
+import com.example.zensudoku.game.LevelComplete
+import com.example.zensudoku.game.PauseMenu
+import com.example.zensudoku.game.PuzzleSelector
+import com.example.zensudoku.view.custom.SudokuBoardView
+import com.example.zensudoku.view.custom.SudokuBoardView.onTouchListener
+import com.example.zensudoku.viewmodel.PlaySudokuViewModel
+import com.google.gson.Gson
+import com.startapp.sdk.adsbase.StartAppAd
+import java.io.IOException
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.PreferenceManager;
-
-import com.example.zensudoku.MusicPlayer;
-import com.example.zensudoku.R;
-import com.example.zensudoku.SettingsActivity;
-import com.example.zensudoku.Timer;
-import com.example.zensudoku.game.Board;
-import com.example.zensudoku.game.LevelComplete;
-import com.example.zensudoku.game.PauseMenu;
-import com.example.zensudoku.game.PuzzleSelector;
-import com.example.zensudoku.view.custom.SudokuBoardView;
-import com.example.zensudoku.viewmodel.PlaySudokuViewModel;
-import com.google.gson.Gson;
-import com.startapp.sdk.adsbase.StartAppAd;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-public class SudokuActivity extends AppCompatActivity implements SudokuBoardView.onTouchListener {
-    public final Observer<Boolean> takingNotes = new Observer<Boolean>() {
-        @Override
-        public void onChanged(@NotNull Boolean aBoolean) {
-            for (ImageButton bttn : buttons) {
-                bttn.setImageResource(R.drawable.ic_key_transp);
+class SudokuActivity : AppCompatActivity(), onTouchListener {
+    val takingNotes: Observer<Boolean> = object : Observer<Boolean?> {
+        override fun onChanged(aBoolean: Boolean) {
+            for (bttn in buttons!!) {
+                bttn!!.setImageResource(R.drawable.ic_key_transp)
                 if (aBoolean) {
-                    bttn.setBackgroundResource(noteButtonImages[buttons.indexOf(bttn)]);
+                    bttn.setBackgroundResource(noteButtonImages[buttons!!.indexOf(bttn)])
                     try {
-                        AnimatedVectorDrawable button = (AnimatedVectorDrawable) bttn.getBackground();
-                        button.start();
-                    } catch (Exception e) {
-
+                        val button = bttn.background as AnimatedVectorDrawable
+                        button.start()
+                    } catch (e: Exception) {
                     }
-
                 } else {
-                    bttn.setBackgroundResource(regularButtonImages[buttons.indexOf(bttn)]);
+                    bttn.setBackgroundResource(regularButtonImages[buttons!!.indexOf(bttn)])
                     try {
-                        AnimatedVectorDrawable button = (AnimatedVectorDrawable) bttn.getBackground();
-                        button.start();
-                    } catch (Exception e) {
-
+                        val button = bttn.background as AnimatedVectorDrawable
+                        button.start()
+                    } catch (e: Exception) {
                     }
                 }
             }
-
-
         }
-    };
-    ImageButton button1;
-    int hintCounter;
-    String difficulty;
-    public final Observer<Set<Integer>> updateNotes = new Observer<Set<Integer>>() {
-        @Override
-        public void onChanged(Set<Integer> notes) {
-            for (ImageButton bttn : buttons) {
-                int i = buttons.indexOf(bttn) + 1;
+    }
+    var button1: ImageButton? = null
+    var hintCounter = 0
+    var difficulty: String? = null
+    val updateNotes: Observer<Set<Int>> = object : Observer<Set<Int?>?> {
+        override fun onChanged(notes: Set<Int?>) {
+            for (bttn in buttons!!) {
+                val i = buttons!!.indexOf(bttn) + 1
                 if (notes.contains(i)) {
-
                 }
                 if (!notes.contains(i)) {
                 }
             }
         }
-    };
-    Timer timer = new Timer();
-    public final Observer<Boolean> completedBoard = aBoolean -> {
+    }
+    var timer = Timer()
+    val completedBoard = Observer { aBoolean: Boolean ->
         if (aBoolean) {
-            timer.stop();
-            FragmentManager fm = getSupportFragmentManager();
-            LevelComplete lc = new LevelComplete(difficulty, timer.getTimer());
-            lc.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_NoActionBar_Fullscreen);
-
-
-            lc.show(fm, "LevelComplete");
-
-
+            timer.stop()
+            val fm = supportFragmentManager
+            val lc = LevelComplete(difficulty, timer.timer)
+            lc.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_NoActionBar_Fullscreen)
+            lc.show(fm, "LevelComplete")
         }
-
-    };
-    MediaPlayer hintNoise;
-    MediaPlayer popNoise;
-    Integer[] tappedButtonImages;
-    PlaySudokuViewModel view;
-
-
-    final List<ImageButton> buttons;
-    SudokuBoardView sudokuBoardView;
-    SharedPreferences mPrefs;
-    MusicPlayer bkgrd;
-    ImageButton button2;
-    ImageButton button3;
-    ImageButton button4;
-    ImageButton button5;
-    ImageButton button6;
-    ImageButton button7;
-    ImageButton button8;
-    ImageButton button9;
-    ImageButton delete;
-    ImageButton notes;
-    ImageButton hint;
-    Integer[] noteButtonImages;
-    Integer[] regularButtonImages;
-
-    public final Observer<Board> cellObserver = new Observer<Board>() {
-        @Override
-        public void onChanged(Board board) {
-
-            sudokuBoardView.updateCells(view.sudokuGame.cellsLiveData);
-        }
-    };
-    public final Observer<Pair<Integer, Integer>> updateCell = new Observer<Pair<Integer, Integer>>() {
-        @Override
-        public void onChanged(Pair<Integer, Integer> value) {
-            sudokuBoardView.updateSelectedCellUI(value.first, value.second);
-        }
-
-    };
-
-    {
-        hintCounter = 3;
     }
 
-    {
-        buttons = new ArrayList<>();
-        noteButtonImages = new Integer[]{R.drawable.ic_key1_to_smol1, R.drawable.ic_key2_to_smol2, R.drawable.ic_key3_to_smol3, R.drawable.ic_key4_to_smol4, R.drawable.ic_key5_to_smol5, R.drawable.ic_key6_to_smol6, R.drawable.ic_key7_to_smol7, R.drawable.ic_key8_to_smol8, R.drawable.ic_key9_to_smol9};
-        regularButtonImages = new Integer[]{R.drawable.ic_key1_to_big1, R.drawable.ic_key2_to_big2, R.drawable.ic_key3_to_big3, R.drawable.ic_key4_to_big4, R.drawable.ic_key5_to_big5, R.drawable.ic_key6_to_big6, R.drawable.ic_key7_to_big7, R.drawable.ic_key8_to_big8, R.drawable.ic_key9_to_big9};
-        tappedButtonImages = new Integer[]{R.drawable.ic_key1_tap, R.drawable.ic_key2_tap, R.drawable.ic_key3_tap, R.drawable.ic_key4_tap, R.drawable.ic_key5_tap, R.drawable.ic_key6_tap, R.drawable.ic_key7_tap, R.drawable.ic_key8_tap, R.drawable.ic_key9_tap};
+    private fun releaseMediaPlayers() {
+        if (popNoise != null) {
+            popNoise!!.release()
+            popNoise = null
+        }
+        if (hintNoise != null) {
+            hintNoise!!.release()
+            hintNoise = null
+        }
     }
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        StartAppAd.showAd(this);
+    var hintNoise: MediaPlayer? = null
+    var popNoise: MediaPlayer? = null
+    var tappedButtonImages: Array<Int>
+    var view: PlaySudokuViewModel? = null
+    var buttons: MutableList<ImageButton?>? = null
+    var sudokuBoardView: SudokuBoardView? = null
+    var mPrefs: SharedPreferences? = null
+    var bkgrd: MusicPlayer? = null
+    var button2: ImageButton? = null
+    var button3: ImageButton? = null
+    var button4: ImageButton? = null
+    var button5: ImageButton? = null
+    var button6: ImageButton? = null
+    var button7: ImageButton? = null
+    var button8: ImageButton? = null
+    var button9: ImageButton? = null
+    var delete: ImageButton? = null
+    var notes: ImageButton? = null
+    var hint: ImageButton? = null
+    var noteButtonImages: Array<Int>
+    var regularButtonImages: Array<Int>
+    val cellObserver: Observer<Board> = object : Observer<Board?> {
+        override fun onChanged(board: Board) {
+            sudokuBoardView!!.updateCells(view!!.sudokuGame.cellsLiveData)
+        }
+    }
+    val updateCell: Observer<Pair<Int, Int>> = object : Observer<Pair<Int?, Int?>?> {
+        override fun onChanged(value: Pair<Int?, Int?>) {
+            sudokuBoardView!!.updateSelectedCellUI(value.first!!, value.second!!)
+        }
+    }
 
+    init {
+        hintCounter = 3
+    }
 
+    init {
+        buttons = ArrayList()
+        noteButtonImages = arrayOf(R.drawable.ic_key1_to_smol1, R.drawable.ic_key2_to_smol2, R.drawable.ic_key3_to_smol3, R.drawable.ic_key4_to_smol4, R.drawable.ic_key5_to_smol5, R.drawable.ic_key6_to_smol6, R.drawable.ic_key7_to_smol7, R.drawable.ic_key8_to_smol8, R.drawable.ic_key9_to_smol9)
+        regularButtonImages = arrayOf(R.drawable.ic_key1_to_big1, R.drawable.ic_key2_to_big2, R.drawable.ic_key3_to_big3, R.drawable.ic_key4_to_big4, R.drawable.ic_key5_to_big5, R.drawable.ic_key6_to_big6, R.drawable.ic_key7_to_big7, R.drawable.ic_key8_to_big8, R.drawable.ic_key9_to_big9)
+        tappedButtonImages = arrayOf(R.drawable.ic_key1_tap, R.drawable.ic_key2_tap, R.drawable.ic_key3_tap, R.drawable.ic_key4_tap, R.drawable.ic_key5_tap, R.drawable.ic_key6_tap, R.drawable.ic_key7_tap, R.drawable.ic_key8_tap, R.drawable.ic_key9_tap)
+    }
 
-        mPrefs = getSharedPreferences("game",MODE_PRIVATE);
-
-        timer.start();
-        difficulty = getIntent().getStringExtra("Difficulty");
-
-        bkgrd = new MusicPlayer(getApplicationContext());
-        popNoise = MediaPlayer.create(getApplicationContext(), R.raw.pop1);
-        hintNoise = MediaPlayer.create(getApplicationContext(), R.raw.hintnoise);
-
-        PuzzleSelector ps = null;
-        if (!getIntent().hasExtra("Resume")) {
-            ps = new PuzzleSelector(this, getIntent().getStringExtra("Difficulty"));
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        StartAppAd.showAd(this)
+        mPrefs = getSharedPreferences("game", MODE_PRIVATE)
+        timer.start()
+        difficulty = intent.getStringExtra("Difficulty")
+        bkgrd = MusicPlayer(applicationContext)
+        popNoise = MediaPlayer.create(applicationContext, R.raw.pop1)
+        hintNoise = MediaPlayer.create(applicationContext, R.raw.hintnoise)
+        var ps: PuzzleSelector? = null
+        if (!intent.hasExtra("Resume")) {
+            ps = PuzzleSelector(this, intent.getStringExtra("Difficulty"))
             try {
-                ps.run();
-            } catch (IOException e) {
-                e.printStackTrace();
+                ps.run()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
 
 
         // Toolbar toolbar = findViewById(R.id.toolbar);
         //  setSupportActionBar(toolbar);
-
-
-        view = ViewModelProviders.of(this).get(PlaySudokuViewModel.class);
-        view.sudokuGame.selectedCellLiveData.observe(this, updateCell);
-        view.sudokuGame.cellsLiveData.observe(this, cellObserver);
-        view.sudokuGame.notesLiveData.observe(this, updateNotes);
-        view.sudokuGame.isTakingNotes.observe(this, takingNotes);
-        view.sudokuGame.isComplete.observe(this, completedBoard);
-        sudokuBoardView = findViewById(R.id.sudokuBoardView);
-        sudokuBoardView.registerListener(this);
-
-        if (ps != null) view.sudokuGame.setGame(ps.getGame());
-        button1 = findViewById(R.id.button1);
-        button2 = findViewById(R.id.button2);
-        button3 = findViewById(R.id.button3);
-        button4 = findViewById(R.id.button4);
-        button5 = findViewById(R.id.button5);
-        button6 = findViewById(R.id.button6);
-        button7 = findViewById(R.id.button7);
-        button8 = findViewById(R.id.button8);
-        button9 = findViewById(R.id.button9);
-        delete = findViewById(R.id.delete);
-        notes = findViewById(R.id.notes);
-        AnimatedVectorDrawable avd = (AnimatedVectorDrawable) notes.getBackground();
-        avd.start();
-        hint = findViewById(R.id.hint);
-        ImageButton pause = findViewById(R.id.pauseButton);
-
-        pause.setOnClickListener(v -> {
-            pauseMenu();
-        });
-        buttons.add(button1);
-        buttons.add(button2);
-        buttons.add(button3);
-        buttons.add(button4);
-        buttons.add(button5);
-        buttons.add(button6);
-        buttons.add(button7);
-        buttons.add(button8);
-        buttons.add(button9);
-        delete.setOnClickListener(v -> {
-            AnimatedVectorDrawable delBttn = (AnimatedVectorDrawable) delete.getBackground();
-            delBttn.start();
-            view.sudokuGame.delete();
-            playPop(true);
-        });
-        notes.setOnClickListener(v -> {
-            view.sudokuGame.setNotesMode();
-            if (view.sudokuGame.isTakingNotes.getValue()) {
-                notes.setBackgroundResource(R.drawable.ic_notes_off);
+        view = ViewModelProviders.of(this).get(PlaySudokuViewModel::class.java)
+        view!!.sudokuGame.selectedCellLiveData.observe(this, updateCell)
+        view!!.sudokuGame.cellsLiveData.observe(this, cellObserver)
+        view!!.sudokuGame.notesLiveData.observe(this, updateNotes)
+        view!!.sudokuGame.isTakingNotes.observe(this, takingNotes)
+        view!!.sudokuGame.isComplete.observe(this, completedBoard)
+        sudokuBoardView = findViewById(R.id.sudokuBoardView)
+        sudokuBoardView.registerListener(this)
+        if (ps != null) view!!.sudokuGame.setGame(ps.game)
+        button1 = findViewById(R.id.button1)
+        button2 = findViewById(R.id.button2)
+        button3 = findViewById(R.id.button3)
+        button4 = findViewById(R.id.button4)
+        button5 = findViewById(R.id.button5)
+        button6 = findViewById(R.id.button6)
+        button7 = findViewById(R.id.button7)
+        button8 = findViewById(R.id.button8)
+        button9 = findViewById(R.id.button9)
+        delete = findViewById(R.id.delete)
+        notes = findViewById(R.id.notes)
+        val avd = notes.getBackground() as AnimatedVectorDrawable
+        avd.start()
+        hint = findViewById(R.id.hint)
+        val pause = findViewById<ImageButton>(R.id.pauseButton)
+        pause.setOnClickListener { v: View? -> pauseMenu() }
+        buttons!!.add(button1)
+        buttons!!.add(button2)
+        buttons!!.add(button3)
+        buttons!!.add(button4)
+        buttons!!.add(button5)
+        buttons!!.add(button6)
+        buttons!!.add(button7)
+        buttons!!.add(button8)
+        buttons!!.add(button9)
+        delete.setOnClickListener(View.OnClickListener { v: View? ->
+            val delBttn = delete.getBackground() as AnimatedVectorDrawable
+            delBttn.start()
+            view!!.sudokuGame.delete()
+            playPop(true)
+        })
+        notes.setOnClickListener(View.OnClickListener { v: View? ->
+            view!!.sudokuGame.setNotesMode()
+            if (view!!.sudokuGame.isTakingNotes.value!!) {
+                notes.setBackgroundResource(R.drawable.ic_notes_off)
             } else {
-                notes.setBackgroundResource(R.drawable.ic_notes_on);
+                notes.setBackgroundResource(R.drawable.ic_notes_on)
             }
-            AnimatedVectorDrawable noteB = (AnimatedVectorDrawable) notes.getBackground();
-            noteB.start();
-
-            playPop(true);
-        });
-        hint.setOnClickListener(v -> {
-            AnimatedVectorDrawable hintBttn = (AnimatedVectorDrawable) hint.getBackground();
-
-            hintBttn.start();
-
+            val noteB = notes.getBackground() as AnimatedVectorDrawable
+            noteB.start()
+            playPop(true)
+        })
+        hint.setOnClickListener(View.OnClickListener { v: View? ->
+            val hintBttn = hint.getBackground() as AnimatedVectorDrawable
+            hintBttn.start()
             if (hintCounter > 0) {
-                view.sudokuGame.getHint();
-                hintCounter--;
+                view!!.sudokuGame.hint
+                hintCounter--
             } else {
-                StartAppAd.showAd(this);
-                hintCounter = 3;
+                StartAppAd.showAd(this)
+                hintCounter = 3
             }
-            playPop(false);
-        });
-
-        for (final ImageButton bttn : buttons) {
-            int i = buttons.indexOf(bttn);
-
-
-            bttn.setOnClickListener(v -> {
-                if (!view.sudokuGame.isTakingNotes.getValue()) {
-                    bttn.setBackgroundResource(tappedButtonImages[i]);
-                    AnimatedVectorDrawable numBttn = (AnimatedVectorDrawable) bttn.getBackground();
-                    numBttn.start();
+            playPop(false)
+        })
+        for (bttn in buttons) {
+            val i = buttons!!.indexOf(bttn)
+            bttn!!.setOnClickListener { v: View? ->
+                if (!view!!.sudokuGame.isTakingNotes.value!!) {
+                    bttn!!.setBackgroundResource(tappedButtonImages[i])
+                    val numBttn = bttn!!.getBackground() as AnimatedVectorDrawable
+                    numBttn.start()
                 }
-
-                view.sudokuGame.handleInput(i + 1);
-                playPop(true);
-            });
+                view!!.sudokuGame.handleInput(i + 1)
+                playPop(true)
+            }
         }
     }
 
-    private void pauseMenu() {
-
-        timer.stop();
-        FragmentManager fm = getSupportFragmentManager();
-        PauseMenu pauseMenu = new PauseMenu();
-        pauseMenu.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_NoActionBar_Fullscreen);
-        pauseMenu.show(fm, "LevelComplete");
+    private fun pauseMenu() {
+        timer.stop()
+        val fm = supportFragmentManager
+        val pauseMenu = PauseMenu()
+        pauseMenu.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_NoActionBar_Fullscreen)
+        pauseMenu.show(fm, "LevelComplete")
     }
 
-    private void playPop(Boolean soundType) {
-        SharedPreferences sb = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    private fun playPop(soundType: Boolean) {
+        val sb = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if (sb.getBoolean("sfx", true)) {
             if (soundType) {
-                popNoise.start();
+                popNoise!!.start()
             } else {
-                hintNoise.start();
-
+                hintNoise!!.start()
             }
         }
     }
-    
-    @Override
-    protected void onStart() {
-        Activity activity = this;
-        super.onStart();
-        if (getIntent().hasExtra("Resume")) {
-            loadBoard();
+
+    override fun onStart() {
+        val activity: Activity = this
+        super.onStart()
+        if (intent.hasExtra("Resume")) {
+            loadBoard()
         }
-
-
-
-
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        releaseMediaPlayers()
+    }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
+        val id = item.itemId
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            return true
         }
-
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-    @Override
-    public void onBackPressed() {
+    override fun onBackPressed() {
         //super.onBackPressed();
-        pauseMenu();
-
+        pauseMenu()
     }
 
-    @Override
-    public void onCellTouched(int row, int col) {
-        playPop(true);
-        view.sudokuGame.updateSelectedCellLiveData(row, col);
+    override fun onCellTouched(row: Int, col: Int) {
+        playPop(true)
+        view!!.sudokuGame.updateSelectedCellLiveData(row, col)
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        saveGame();
-        bkgrd.stop();
+    override fun onStop() {
+        super.onStop()
+        saveGame()
+        bkgrd!!.stop()
     }
 
-
-    public void saveGame() {
-        SharedPreferences.Editor pre = mPrefs.edit();
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(view.sudokuGame.cellsLiveData.getValue());
-        pre.putString("boardObj", jsonString);
-        pre.putString("difficulty", getIntent().getStringExtra("difficulty"));
-        pre.commit();
+    fun saveGame() {
+        val pre = mPrefs!!.edit()
+        val gson = Gson()
+        val jsonString = gson.toJson(view!!.sudokuGame.cellsLiveData.value)
+        pre.putString("boardObj", jsonString)
+        pre.putString("difficulty", intent.getStringExtra("difficulty"))
+        pre.commit()
     }
 
-    public void loadBoard() {
-        Gson gson = new Gson();
-        String jsonString = mPrefs.getString("boardObj", "");
-        difficulty = mPrefs.getString("difficulty", "Medium");
-        Board board = gson.fromJson(jsonString, Board.class);
-        view.sudokuGame.setGame(board.getOrigBoard());
-        view.sudokuGame.setBoard(board);
-        view.sudokuGame.cellsLiveData.setValue(board);
-
+    fun loadBoard() {
+        val gson = Gson()
+        val jsonString = mPrefs!!.getString("boardObj", "")
+        difficulty = mPrefs!!.getString("difficulty", "Medium")
+        val board = gson.fromJson(jsonString, Board::class.java)
+        view!!.sudokuGame.setGame(board.origBoard)
+        view!!.sudokuGame.setBoard(board)
+        view!!.sudokuGame.cellsLiveData.value = board
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bkgrd.musicChecker();
+    override fun onResume() {
+        super.onResume()
+        bkgrd!!.musicChecker()
     }
-
-
 }

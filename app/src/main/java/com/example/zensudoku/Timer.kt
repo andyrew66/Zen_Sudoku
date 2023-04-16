@@ -1,50 +1,37 @@
-package com.example.zensudoku;
+package com.example.zensudoku
 
-import android.os.Handler;
+import android.os.Handler
 
-public class Timer implements Runnable {
-    private final Handler handler = new Handler();
-    String timer;
+class Timer : Runnable {
+    private val handler = Handler()
+    var timer: String? = null
+
     //private final TextView textView;
-    private volatile long startTime;
-    private volatile long elapsedTime;
+    @Volatile
+    private var startTime: Long = 0
 
+    @Volatile
+    var elapsedTime: Long = 0
+        private set
 
-    public Timer() {
-
-
-    }
-
-    @Override
-    public void run() {
-        long millis = System.currentTimeMillis() - startTime;
-
-        int seconds = (int) millis / 1000;
-        int minutes = seconds / 60;
-
-        timer = (String.format("%d:%02d", minutes, seconds));
-        if (elapsedTime == -1) {
-            handler.postDelayed(this, 500);
+    override fun run() {
+        val millis = System.currentTimeMillis() - startTime
+        val seconds = millis.toInt() / 1000
+        val minutes = seconds / 60
+        timer = String.format("%d:%02d", minutes, seconds)
+        if (elapsedTime == -1L) {
+            handler.postDelayed(this, 500)
         }
-
     }
 
-    public void start() {
-        this.startTime = System.currentTimeMillis();
-        this.elapsedTime = -1;
-        handler.post(this);
+    fun start() {
+        startTime = System.currentTimeMillis()
+        elapsedTime = -1
+        handler.post(this)
     }
 
-    public void stop() {
-        this.elapsedTime = System.currentTimeMillis() - startTime;
-        handler.removeCallbacks(this);
-    }
-
-    public long getElapsedTime() {
-        return elapsedTime;
-    }
-
-    public String getTimer() {
-        return timer;
+    fun stop() {
+        elapsedTime = System.currentTimeMillis() - startTime
+        handler.removeCallbacks(this)
     }
 }
